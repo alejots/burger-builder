@@ -6,13 +6,12 @@ import classes from "./Modal.module.css";
 
 class Modal extends Component {
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(this.props.show);
-    return nextProps.show !== this.props.show;
+    return (
+      nextProps.show !== this.props.show ||
+      nextProps.children !== this.props.children
+    );
   }
 
-  componentDidUpdate() {
-    console.log("[Modal.jsx] Did Update");
-  }
   render() {
     return (
       <React.Fragment>
