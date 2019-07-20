@@ -1,6 +1,6 @@
 import React from "react";
 
-import BurgerIngridient from "./BurgerIngridient/BurgerIngridient";
+import BurgerIngridient from "./BurgerIngridient";
 
 import classes from "./Burger.module.css";
 
