@@ -10,6 +10,7 @@ import withErrorHandler from "../hoc/withErrorHandler/withErrorHandler";
 import axios from "../axios-orders";
 
 import * as BurgerBuilderActions from "./BurgerBuilderActions";
+import * as OrdersActions from "../Orders/OrdersActions";
 
 class BurgerBuilder extends Component {
   state = {
@@ -41,6 +42,7 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
+    this.props.onPurchaseInit();
     this.props.history.push("/checkout");
   };
 
@@ -102,23 +104,20 @@ class BurgerBuilder extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice,
-    error: state.error
-  };
-};
+const mapStateToProps = ({ burgerBuilder }) => ({
+  ingredients: burgerBuilder.ingredients,
+  totalPrice: burgerBuilder.totalPrice,
+  error: burgerBuilder.error
+});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onIngredientAdded: ingredientName =>
-      dispatch(BurgerBuilderActions.addIngredient(ingredientName)),
-    onIngredientRemoved: ingredientName =>
-      dispatch(BurgerBuilderActions.removeIngredient(ingredientName)),
-    onInitIngredients: () => dispatch(BurgerBuilderActions.initIngredients())
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  onIngredientAdded: ingredientName =>
+    dispatch(BurgerBuilderActions.addIngredient(ingredientName)),
+  onIngredientRemoved: ingredientName =>
+    dispatch(BurgerBuilderActions.removeIngredient(ingredientName)),
+  onInitIngredients: () => dispatch(BurgerBuilderActions.initIngredients()),
+  onPurchaseInit: () => dispatch(OrdersActions.onPurchaseInit())
+});
 
 export default connect(
   mapStateToProps,
