@@ -12,7 +12,7 @@ function App() {
     <div>
       <Layout>
         <Switch>
-          <Route path="/login" component={Auth} />
+          <Route path="/sign-up" component={Auth} />
           <Route path="/checkout" component={Checkout} />
           <Route path="/orders" component={Orders} />
           <Route path="/" exact component={BurgerBuilder} />

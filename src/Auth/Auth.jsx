@@ -1,5 +1,10 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import axios from "../axios-orders";
 
+import * as AuthActions from "./AuthActions";
+
+import withErrorHandler from "../hoc/withErrorHandler/withErrorHandler";
 import Input from "../components/UI/Input";
 import Button from "../components/UI/Button/Button";
 import Spinner from "../components/UI/Spinner/Spinner";
@@ -37,14 +42,19 @@ class Auth extends Component {
         valid: false,
         touched: false
       }
-    }
+    },
+    isSignUp: true
   };
 
-  loginHandler = event => {
+  signUpHandler = event => {
     event.preventDefault();
-    const { loginForm } = this.state;
+    const { loginForm, isSignUp } = this.state;
 
-    console.log(loginForm);
+    const user = {
+      email: loginForm.email.value,
+      password: loginForm.password.value
+    };
+    this.props.onSignUp(user, isSignUp ? "signUp" : "signInWithPassword");
   };
 
   checkValidity(value, rules) {
@@ -91,8 +101,13 @@ class Auth extends Component {
     this.setState({ loginForm, formIsValid });
   };
 
+  changeModeHandler = () => {
+    const isSignUp = !this.state.isSignUp;
+    this.setState({ isSignUp });
+  };
+
   render() {
-    const { loginForm, formIsValid } = this.state;
+    const { loginForm, formIsValid, isSignUp } = this.state;
     const { loading } = this.props;
 
     const formElementArray = [];
@@ -108,7 +123,7 @@ class Auth extends Component {
     return (
       <div className={classes.Auth}>
         <h4>Enter your credentials</h4>
-        <form onSubmit={this.loginHandler}>
+        <form onSubmit={this.signUpHandler}>
           {formElementArray.map(({ id, config }) => (
             <Input
               key={id}
@@ -125,9 +140,23 @@ class Auth extends Component {
             SUBMIT
           </Button>
         </form>
+        <Button btnType="Danger" clicked={this.changeModeHandler}>
+          Switch to {isSignUp ? "Login" : "Sign Up"}
+        </Button>
       </div>
     );
   }
 }
 
-export default Auth;
+const mapStateToProps = ({ auth }) => ({
+  loading: auth.loading
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSignUp: (user, type) => dispatch(AuthActions.auth(user, type))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(Auth, axios));
