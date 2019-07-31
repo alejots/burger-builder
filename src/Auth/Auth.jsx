@@ -108,7 +108,7 @@ class Auth extends Component {
 
   render() {
     const { loginForm, formIsValid, isSignUp } = this.state;
-    const { loading } = this.props;
+    const { loading, error } = this.props;
 
     const formElementArray = [];
     for (let key in loginForm) {
@@ -143,13 +143,15 @@ class Auth extends Component {
         <Button btnType="Danger" clicked={this.changeModeHandler}>
           Switch to {isSignUp ? "Login" : "Sign Up"}
         </Button>
+        {error && <h5>{error.message}</h5>}
       </div>
     );
   }
 }
 
 const mapStateToProps = ({ auth }) => ({
-  loading: auth.loading
+  loading: auth.loading,
+  error: auth.error
 });
 
 const mapDispatchToProps = dispatch => ({

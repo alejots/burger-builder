@@ -38,7 +38,7 @@ export const auth = (user, type) => {
         dispatch(authSuccess(res.data));
       })
       .catch(error => {
-        dispatch(authFail(error));
+        dispatch(authFail(error.response.data.error));
       });
   };
 };
