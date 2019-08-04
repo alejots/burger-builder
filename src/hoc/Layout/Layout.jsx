@@ -22,7 +22,6 @@ class Layout extends Component {
 
   render() {
     const { children, user } = this.props;
-    console.log(user);
     return (
       <React.Fragment>
         <Toolbar
