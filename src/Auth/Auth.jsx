@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import axios from "../axios-orders";
 
@@ -20,7 +21,7 @@ class Auth extends Component {
           type: "email",
           placeholder: "Email Address"
         },
-        value: "",
+        value: "test@test.com",
         validation: {
           required: true,
           isEmail: true
@@ -34,7 +35,7 @@ class Auth extends Component {
           type: "password",
           placeholder: "Password"
         },
-        value: "",
+        value: "qweqweqwe",
         validation: {
           required: true,
           minLength: 7
@@ -43,8 +44,15 @@ class Auth extends Component {
         touched: false
       }
     },
-    isSignUp: true
+    isSignUp: false
   };
+
+  componentDidMount() {
+    console.log(this.props.buildingBurger, this.props.authRedirectPath);
+    if (!this.props.buildingBurger && this.props.authRedirectPath !== "/") {
+      this.props.onSetAuthRedirectPath();
+    }
+  }
 
   signUpHandler = event => {
     event.preventDefault();
@@ -108,7 +116,9 @@ class Auth extends Component {
 
   render() {
     const { loginForm, formIsValid, isSignUp } = this.state;
-    const { loading, error } = this.props;
+    const { loading, error, isAuthenticated, authRedirectPath } = this.props;
+
+    if (isAuthenticated) return <Redirect to={authRedirectPath} />;
 
     const formElementArray = [];
     for (let key in loginForm) {
@@ -149,13 +159,17 @@ class Auth extends Component {
   }
 }
 
-const mapStateToProps = ({ auth }) => ({
+const mapStateToProps = ({ auth, burgerBuilder }) => ({
   loading: auth.loading,
-  error: auth.error
+  error: auth.error,
+  isAuthenticated: auth.user.idToken ? true : false,
+  buildingBurger: burgerBuilder.building,
+  authRedirectPath: auth.authRedirectPath
 });
 
 const mapDispatchToProps = dispatch => ({
-  onSignUp: (user, type) => dispatch(AuthActions.auth(user, type))
+  onSignUp: (user, type) => dispatch(AuthActions.auth(user, type)),
+  onSetAuthRedirectPath: () => dispatch(AuthActions.setAuthRedirectPath("/"))
 });
 
 export default connect(

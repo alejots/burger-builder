@@ -4,14 +4,21 @@ import classes from "./NavigationItems.module.css";
 
 import NavigationItem from "./NavigationItem/NavigationItem";
 
-const navigationItems = props => (
-  <ul className={classes.NavigationItems}>
-    <NavigationItem link="/" exact>
-      Burger Builder
-    </NavigationItem>
-    <NavigationItem link="/orders">Orders</NavigationItem>
-    <NavigationItem link="/sign-up">Sign Up</NavigationItem>
-  </ul>
-);
+const navigationItems = props => {
+  console.log(props.user);
+  return (
+    <ul className={classes.NavigationItems}>
+      <NavigationItem link="/" exact>
+        Burger Builder
+      </NavigationItem>
+      {props.user.localId ? (
+        (<NavigationItem link="/orders">Orders</NavigationItem>,
+        <NavigationItem link="/logout">Logout</NavigationItem>)
+      ) : (
+        <NavigationItem link="/sign-up">Auth</NavigationItem>
+      )}
+    </ul>
+  );
+};
 
 export default navigationItems;

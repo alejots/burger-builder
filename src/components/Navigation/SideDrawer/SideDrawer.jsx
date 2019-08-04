@@ -19,7 +19,7 @@ const sideDrawer = props => {
           <Logo />
         </div>
         <nav>
-          <NavigationItems />
+          <NavigationItems user={props.user} />
         </nav>
       </div>
     </React.Fragment>

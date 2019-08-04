@@ -1,9 +1,16 @@
-import { AUTH_START, AUTH_SUCCESS, AUTH_FAIL } from "./AuthActions";
+import {
+  AUTH_START,
+  AUTH_SUCCESS,
+  AUTH_FAIL,
+  AUTH_LOGOUT,
+  SET_AUTH_REDIRECT_PATH
+} from "./AuthActions";
 
 const initialState = {
   error: null,
   loading: false,
-  user: {}
+  user: {},
+  authRedirectPath: "/"
 };
 
 const reducer = (state = initialState, action) => {
@@ -25,6 +32,16 @@ const reducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: action.error
+      };
+    case AUTH_LOGOUT:
+      return {
+        ...state,
+        user: {}
+      };
+    case SET_AUTH_REDIRECT_PATH:
+      return {
+        ...state,
+        authRedirectPath: action.path
       };
     default:
       return state;

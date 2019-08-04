@@ -11,6 +11,7 @@ import axios from "../axios-orders";
 
 import * as BurgerBuilderActions from "./BurgerBuilderActions";
 import * as OrdersActions from "../Orders/OrdersActions";
+import * as AuthAction from "../Auth/AuthActions";
 
 class BurgerBuilder extends Component {
   state = {
@@ -34,7 +35,12 @@ class BurgerBuilder extends Component {
   }
 
   purchaseHandler = () => {
-    this.setState({ purchasing: true });
+    if (this.props.isAuthenticated) {
+      this.setState({ purchasing: true });
+    } else {
+      this.props.onSetAuthRedirectPath("/checkout");
+      this.props.history.push("/sign-up");
+    }
   };
 
   purchaseCancelHandler = () => {
@@ -53,7 +59,8 @@ class BurgerBuilder extends Component {
       totalPrice,
       error,
       onIngredientAdded,
-      onIngredientRemoved
+      onIngredientRemoved,
+      isAuthenticated
     } = this.props;
 
     const disabledInfo = {
@@ -79,6 +86,7 @@ class BurgerBuilder extends Component {
             price={totalPrice}
             purchasable={this.isPurchasable(ingredients)}
             ordered={this.purchaseHandler}
+            isAuthenticated={isAuthenticated}
           />
         </React.Fragment>
       );
@@ -104,10 +112,11 @@ class BurgerBuilder extends Component {
   }
 }
 
-const mapStateToProps = ({ burgerBuilder }) => ({
+const mapStateToProps = ({ burgerBuilder, auth }) => ({
   ingredients: burgerBuilder.ingredients,
   totalPrice: burgerBuilder.totalPrice,
-  error: burgerBuilder.error
+  error: burgerBuilder.error,
+  isAuthenticated: auth.user.idToken ? true : false
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -116,7 +125,8 @@ const mapDispatchToProps = dispatch => ({
   onIngredientRemoved: ingredientName =>
     dispatch(BurgerBuilderActions.removeIngredient(ingredientName)),
   onInitIngredients: () => dispatch(BurgerBuilderActions.initIngredients()),
-  onPurchaseInit: () => dispatch(OrdersActions.onPurchaseInit())
+  onPurchaseInit: () => dispatch(OrdersActions.onPurchaseInit()),
+  onSetAuthRedirectPath: path => dispatch(AuthAction.setAuthRedirectPath(path))
 });
 
 export default connect(
