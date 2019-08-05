@@ -17,8 +17,6 @@ class App extends Component {
 
   render() {
     const { isAuthenticated } = this.props;
-    console.log(isAuthenticated);
-
     let routes = (
       <Switch>
         <Route path="/sign-up" component={Auth} />

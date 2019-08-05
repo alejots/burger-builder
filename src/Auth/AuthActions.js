@@ -64,7 +64,6 @@ export const auth = (user, type) => {
         dispatch(checkAuthTimeout(res.data.expiresIn));
       })
       .catch(error => {
-        console.log(error);
         dispatch(authFail(error.response.data.error));
       });
   };
