@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Switch, withRouter } from "react-router-dom";
+import { Route, Switch, withRouter, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import Layout from "./hoc/Layout/Layout";
@@ -16,29 +16,47 @@ class App extends Component {
   }
 
   render() {
+    const { isAuthenticated } = this.props;
+    console.log(isAuthenticated);
+
+    let routes = (
+      <Switch>
+        <Route path="/sign-up" component={Auth} />
+        <Route path="/" exact component={BurgerBuilder} />
+        <Redirect to="/" />
+      </Switch>
+    );
+
+    if (isAuthenticated) {
+      routes = (
+        <Switch>
+          <Route path="/checkout" component={Checkout} />
+          <Route path="/orders" component={Orders} />
+          <Route path="/logout" component={AuthLogout} />
+          <Route path="/sign-up" component={Auth} />
+          <Route path="/" exact component={BurgerBuilder} />
+          <Redirect to="/" />
+        </Switch>
+      );
+    }
     return (
       <div>
-        <Layout>
-          <Switch>
-            <Route path="/sign-up" component={Auth} />
-            <Route path="/checkout" component={Checkout} />
-            <Route path="/orders" component={Orders} />
-            <Route path="/logout" component={AuthLogout} />
-            <Route path="/" exact component={BurgerBuilder} />
-          </Switch>
-        </Layout>
+        <Layout>{routes}</Layout>
       </div>
     );
   }
 }
 
+const mapStateToProps = ({ auth }) => ({
+  isAuthenticated: auth.user.idToken ? true : false
+});
 const mapDispatchToProps = dispatch => ({
   authCheckState: () => dispatch(AuthActions.authCheckState())
 });
 
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(App)
 );

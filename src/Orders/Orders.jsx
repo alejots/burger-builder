@@ -11,7 +11,8 @@ import withErrorHandler from "../hoc/withErrorHandler/withErrorHandler";
 
 class Orders extends Component {
   componentDidMount() {
-    this.props.fetchOrders(this.props.token);
+    const { token, userId } = this.props;
+    this.props.fetchOrders(token, userId);
   }
   render() {
     const { orders, loading } = this.props;
@@ -35,11 +36,12 @@ class Orders extends Component {
 const mapStateToProps = ({ orders, auth }) => ({
   orders: orders.orders,
   loading: orders.loading,
-  token: auth.user.idToken
+  token: auth.user.idToken,
+  userId: auth.user.localId
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchOrders: token => dispatch(fetchOrders(token))
+  fetchOrders: (token, userId) => dispatch(fetchOrders(token, userId))
 });
 
 export default connect(
